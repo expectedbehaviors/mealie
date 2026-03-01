@@ -1,0 +1,105 @@
+# Baseline values for Mealie. Override in ArgoCD with your own values (domain, TZ, auth, storage).
+# Auth: use OIDC at ingress (nginx + oauth2-proxy) or nginx auth so the app is not exposed without login.
+
+mealie:
+  global:
+    fullnameOverride: mealie
+  defaultPodOptions:
+    securityContext:
+      runAsNonRoot: true
+      runAsUser: 911
+      runAsGroup: 911
+      fsGroup: 911
+      fsGroupChangePolicy: "OnRootMismatch"
+  controllers:
+    main:
+      enabled: true
+      type: deployment
+      replicas: 1
+      containers:
+        main:
+          image:
+            repository: ghcr.io/mealie-recipes/mealie
+            tag: v1.4.0
+            pullPolicy: IfNotPresent
+          env:
+            PUID: "911"
+            PGID: "911"
+            TZ: "UTC"
+            ALLOW_SIGNUP: "false"
+            BASE_URL: "https://mealie.example.com"
+          probes:
+            liveness:
+              enabled: true
+              custom: true
+              spec:
+                httpGet:
+                  path: /api/app/about
+                  port: 9000
+                initialDelaySeconds: 30
+                periodSeconds: 15
+                timeoutSeconds: 5
+                failureThreshold: 3
+            readiness:
+              enabled: true
+              custom: true
+              spec:
+                httpGet:
+                  path: /api/app/about
+                  port: 9000
+                initialDelaySeconds: 10
+                periodSeconds: 10
+                timeoutSeconds: 3
+                failureThreshold: 3
+            startup:
+              enabled: true
+              custom: true
+              spec:
+                httpGet:
+                  path: /api/app/about
+                  port: 9000
+                initialDelaySeconds: 10
+                periodSeconds: 5
+                timeoutSeconds: 3
+                failureThreshold: 30
+          resources:
+            requests:
+              cpu: 50m
+              memory: 512Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+  service:
+    main:
+      enabled: true
+      controller: main
+      primary: true
+      ports:
+        http:
+          enabled: true
+          primary: true
+          port: 9000
+          protocol: HTTP
+  ingress:
+    main:
+      enabled: true
+      annotations: {}
+      hosts:
+        - host: mealie.example.com
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - hosts:
+            - mealie.example.com
+          secretName: mealie-tls
+  persistence:
+    data:
+      enabled: true
+      type: persistentVolumeClaim
+      accessMode: ReadWriteOnce
+      storageClass: ""
+      size: 10Gi
+      globalMounts:
+        - path: /app/data
+          readOnly: false
