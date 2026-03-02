@@ -2,6 +2,15 @@
 
 Baseline Helm chart for [Mealie](https://mealie.io) (recipe manager, meal planning, shopping lists). Uses the [bjw-s app-template](https://github.com/bjw-s/app-template).
 
+## Subcharts
+
+| Subchart | Source | Values prefix | Description |
+|----------|--------|---------------|-------------|
+| **mealie** (app-template) | [bjw-s helm-charts](https://github.com/bjw-s/helm-charts) | `mealie.*` | App template: controllers, persistence, ingress, env (BASE_URL, TZ, etc.). |
+| **onepassworditem** | [expectedbehaviors/OnePasswordItem-helm](https://github.com/expectedbehaviors/OnePasswordItem-helm) | `onepassworditem.*` | Optional secrets sync into the release namespace. |
+
+All inputs: **`mealie.*`** (controllers, persistence, ingress, env), **`onepassworditem.enabled`**, **`onepassworditem.items`**. Defaults: see `values.yaml`.
+
 ## Chart contents
 
 - **App:** Mealie (ghcr.io/mealie-recipes/mealie) via bjw-s app-template; port 9000.
