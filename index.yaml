@@ -2,8 +2,36 @@ apiVersion: v1
 entries:
   mealie:
   - apiVersion: v2
+    appVersion: 1.0.1
+    created: "2026-03-02T05:43:56.641946067Z"
+    dependencies:
+    - alias: mealie
+      name: app-template
+      repository: https://bjw-s-labs.github.io/helm-charts
+      version: 4.6.2
+    - name: onepassworditem
+      repository: https://expectedbehaviors.github.io/OnePasswordItem-helm
+      version: 1.1.1
+    description: Mealie recipe manager — recipes, meal planning, shopping lists. bjw-s
+      app-template; use your own ingress/OIDC.
+    digest: 40a4127d7d70c3f4fcd54f631b5a5d1ccb4e64c7d8c769c672120c1b719747ce
+    home: https://mealie.io
+    keywords:
+    - mealie
+    - recipe
+    - meal-planning
+    - bjw-s
+    - app-template
+    kubeVersion: '>=1.22.0-0'
+    name: mealie
+    sources:
+    - https://github.com/mealie-recipes/mealie
+    urls:
+    - https://expectedbehaviors.github.io/mealie/mealie-1.0.1.tgz
+    version: 1.0.1
+  - apiVersion: v2
     appVersion: 1.0.0
-    created: "2026-03-01T08:07:31.815699519Z"
+    created: "2026-03-02T05:43:56.633516486Z"
     dependencies:
     - alias: mealie
       name: app-template
@@ -29,4 +57,4 @@ entries:
     urls:
     - https://expectedbehaviors.github.io/mealie/mealie-1.0.0.tgz
     version: 1.0.0
-generated: "2026-03-01T08:07:31.807998171Z"
+generated: "2026-03-02T05:43:56.62615437Z"
