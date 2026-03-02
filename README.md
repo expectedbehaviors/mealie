@@ -11,6 +11,46 @@ Baseline Helm chart for [Mealie](https://mealie.io) (recipe manager, meal planni
 
 All inputs: **`mealie.*`** (controllers, persistence, ingress, env), **`onepassworditem.enabled`**, **`onepassworditem.items`**. Defaults: see `values.yaml`.
 
+## Configuration reference (all inputs)
+
+Every value is documented below. Source: [bjw-s app-template](https://github.com/bjw-s/helm-charts) (as `mealie.*`) and [expectedbehaviors/OnePasswordItem-helm](https://github.com/expectedbehaviors/OnePasswordItem-helm) (as `onepassworditem.*`). The app-template uses `controllers`, `service`, `ingress`, `persistence`, and `global` / `defaultPodOptions`.
+
+### Subchart: mealie (bjw-s app-template)
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `mealie.global.fullnameOverride` | string | — | Override full name (e.g. `mealie`). |
+| `mealie.defaultPodOptions.securityContext` | object | — | Default pod security (runAsNonRoot, runAsUser, fsGroup, etc.). |
+| `mealie.controllers.main.enabled` | bool | `true` | Enable main controller. |
+| `mealie.controllers.main.type` | string | `"deployment"` | Controller type. |
+| `mealie.controllers.main.replicas` | int | `1` | Replicas. |
+| `mealie.controllers.main.containers.main.image.repository` | string | — | Image (e.g. `ghcr.io/mealie-recipes/mealie`). |
+| `mealie.controllers.main.containers.main.image.tag` | string | — | Image tag. |
+| `mealie.controllers.main.containers.main.image.pullPolicy` | string | `"IfNotPresent"` | Pull policy. |
+| `mealie.controllers.main.containers.main.env` | object | — | Env vars (PUID, PGID, TZ, ALLOW_SIGNUP, BASE_URL, etc.). |
+| `mealie.controllers.main.containers.main.probes` | object | — | liveness, readiness, startup (enabled, custom, spec). |
+| `mealie.controllers.main.containers.main.resources` | object | — | requests/limits (cpu, memory). |
+| `mealie.service.main.enabled` | bool | `true` | Enable main service. |
+| `mealie.service.main.ports` | object | — | Ports (e.g. http: 9000). |
+| `mealie.ingress.main.enabled` | bool | `true` | Enable ingress. |
+| `mealie.ingress.main.hosts` | list | — | Hosts (host, paths, pathType). |
+| `mealie.ingress.main.tls` | list | `[]` | TLS (secretName, hosts). |
+| `mealie.ingress.main.annotations` | object | `{}` | Ingress annotations. |
+| `mealie.persistence.data.enabled` | bool | `true` | Enable data PVC. |
+| `mealie.persistence.data.type` | string | `"persistentVolumeClaim"` | Type. |
+| `mealie.persistence.data.accessMode` | string | `"ReadWriteOnce"` | Access mode. |
+| `mealie.persistence.data.size` | string | — | PVC size (e.g. 10Gi). |
+| `mealie.persistence.data.storageClass` | string | — | Storage class. |
+| `mealie.persistence.data.existingClaim` | string | — | Use existing PVC. |
+
+### Subchart: onepassworditem
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `onepassworditem.enabled` | bool | `true` | Create OnePasswordItem resources; set `false` if supplying secrets another way. |
+| `onepassworditem.defaultVault` | string | `""` | Default vault for items. |
+| `onepassworditem.items` | list | `[]` | List of `{ item, name, type }`; `name` must match Secret refs in container env. |
+
 ## Chart contents
 
 - **App:** Mealie (ghcr.io/mealie-recipes/mealie) via bjw-s app-template; port 9000.
